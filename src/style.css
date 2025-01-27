@@ -1,0 +1,29 @@
+    li {
+        list-style: decimal;
+        font-size: 23px;
+        font-weight: 500;
+    }
+
+    button {
+        /* display: flex; */
+        border: none;
+        border-radius: 5px;
+        padding: 5px 1s0px 5px 10px;
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        
+    }
+    .button1{
+        margin-left: 100%;
+    }
+
+    h6 {
+        padding: 10px 0px 0px 10px;
+    }
+    #todo{
+        /* display: flex; */
+        /* justify-content: space-between; */
+        gap: 20px;
+    }
