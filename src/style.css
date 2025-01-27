@@ -23,7 +23,5 @@
         padding: 10px 0px 0px 10px;
     }
     #todo{
-        /* display: flex; */
-        /* justify-content: space-between; */
         gap: 20px;
     }
