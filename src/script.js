@@ -5,7 +5,21 @@ let count = tasks.length ? tasks[tasks.length - 1].serialNo + 1 : 1;
 console.log(count)
 
 
+// getting the input value and calling the add function
+function addFunction(){
+  let input = document.getElementById("todo-input")
+  addTodo(count,input.value)
+  let value = {
+    serialNo:count,
+    taskValue:input.value
+  }
+  tasks.push(value);
+  localStorage.setItem("tasks",JSON.stringify(tasks))
+  input.value = ""
+  count++;
+}
 
+// to create the todo row
 function addTodo(sno, value) {
   let container = document.getElementById("main-container")
 
@@ -21,7 +35,6 @@ function addTodo(sno, value) {
   //created col with h6 child
   let childDiv_1 = document.createElement("div")
   childDiv_1.classList.add('col')
-  childDiv_1.classList.add('mt-3')
   parentDiv.appendChild(childDiv_1)
 
   let childH6_1 = document.createElement("h6");
@@ -33,7 +46,6 @@ function addTodo(sno, value) {
   //created col-8 with h6 child
   let childDiv_2 = document.createElement("div")
   childDiv_2.classList.add('col-8')
-  childDiv_2.classList.add('mt-3')
   parentDiv.appendChild(childDiv_2)
 
   let childH6_2 = document.createElement("h6");
@@ -45,7 +57,6 @@ function addTodo(sno, value) {
   //create col with edit and delete button
   let childDiv_3 = document.createElement("div")
   childDiv_3.classList.add("col")
-  childDiv_3.classList.add("mt-3")
   childDiv_3.classList.add("d-flex")
   childDiv_3.classList.add("align-items-center")
   childDiv_3.classList.add("gap-1")
@@ -65,31 +76,38 @@ function addTodo(sno, value) {
   delete_button.classList.add("btn-danger")
   childDiv_3.appendChild(delete_button)
 
-  delete_button.onclick = deleteTodo;
+  delete_button.addEventListener('click',deleteTodo)
+
+  // delete_button.onclick = deleteTodo;
 
 }
 
 
-function getTodoValue() {
-  let todoInput = document.getElementById("todo-input")
-  let task = {
-    serialNo: count,
-    taskValue: todoInput.value
-  }
-  tasks.push(task)
-  localStorage.setItem("tasks", JSON.stringify(tasks))
-  count++
-}
 
+// function getTodoValue() {
+//   let todoInput = document.getElementById("todo-input")
+//   let task = {
+//     serialNo: count,
+//     taskValue: todoInput.value
+//   }
+//   tasks.push(task)
+//   localStorage.setItem("tasks", JSON.stringify(tasks))
+//   count++
+// }
+
+
+//
+
+
+// to load/print the todos when the page loads/refresh
 function printValues() {
   if(tasks.length){
     let stringTask = localStorage.getItem("tasks")
 
     let parsedTask = JSON.parse(stringTask)
   
-    let main = document.getElementById("main-container")
-  
-  
+    // let main = document.getElementById("main-container")
+   
     parsedTask.forEach(element => {
       addTodo(element.serialNo,element.taskValue)
     });
@@ -102,43 +120,36 @@ searchInput.addEventListener("input", (e) => {
   searchTodo(e)
 })
 
+
+// for searching the todos
 function searchTodo(e) {
   let filteredTodos = tasks.filter((todo) => {
     return todo.taskValue.includes(e.target.value)
   })
 
-  let main = document.getElementById("mainContent")
+  let main = document.getElementById("main-container")
 
 
   main.innerHTML = ""
 
-  filteredTodos.map(element => {
-    let h3 = document.createElement("h3")
-    h3.innerText = element.taskValue
-    main.appendChild(h3)
+  filteredTodos.map((element) => {
+    console.log(element)
+    addTodo(element.serialNo,element.taskValue)
   });
 
 }
 
-function addFunction(){
-  let input = document.getElementById("todo-input")
-  addTodo(count,input.value)
-  let value = {
-    serialNo:count,
-    taskValue:input.value
-  }
-  tasks.push(value);
-  localStorage.setItem("tasks",JSON.stringify(tasks))
-  input.value = ""
-  count++;
-}
 
 
+
+
+// for deleteing the todo
 function deleteTodo(e){
   console.log("delete button called")
   let removeRow = e.target.parentElement.parentElement;
   let getSno = removeRow.firstElementChild;
   let h6 = getSno.firstElementChild.innerText;
+  console.log(h6)
   
   let filteredTodos = tasks.filter((value,key)=>{
     if(value.serialNo != h6){
@@ -158,8 +169,8 @@ function deleteTodo(e){
 
 
 
-  localStorage.setItem("tasks",JSON.stringify(finalTodos))
-  removeRow.remove()
+  localStorage.setItem("tasks",JSON.stringify(finalTodos))  // localstorage 
+  removeRow.remove() // dom 
 
   let mainContainer = document.getElementById("main-container")
   mainContainer.innerHTML = ""
