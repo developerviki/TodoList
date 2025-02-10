@@ -1,12 +1,11 @@
-let todos = [];
-
 
 // to create the todo row
-function addTodo(sno = 1, value) {
+function addTodo(sno = 1, value,id) {
   let container = document.getElementById("main-container")
 
   //created parent row
   let parentDiv = document.createElement("div")
+  parentDiv.id = id;
   parentDiv.classList.add('row')
   parentDiv.classList.add('align-items-center')
   parentDiv.classList.add('border-bottom')
@@ -16,7 +15,7 @@ function addTodo(sno = 1, value) {
 
   //created col with h6 child
   let childDiv_1 = document.createElement("div")
-  childDiv_1.classList.add('col')
+  childDiv_1.classList.add('col-lg-2',"col-md-2","col-sm-12","mt-3")
   parentDiv.appendChild(childDiv_1)
 
   let childH6_1 = document.createElement("h6");
@@ -27,7 +26,7 @@ function addTodo(sno = 1, value) {
 
   //created col-8 with h6 child
   let childDiv_2 = document.createElement("div")
-  childDiv_2.classList.add('col-8')
+  childDiv_2.classList.add("col-lg-7","col-md-7","col-sm-12","mt-3")
   parentDiv.appendChild(childDiv_2)
 
   let childH6_2 = document.createElement("h6");
@@ -38,7 +37,7 @@ function addTodo(sno = 1, value) {
 
   //create col with edit and delete button
   let childDiv_3 = document.createElement("div")
-  childDiv_3.classList.add("col")
+  childDiv_3.classList.add('col-lg-3',"col-md-3","col-sm-12","mt-3")
   childDiv_3.classList.add("d-flex")
   childDiv_3.classList.add("align-items-center")
   childDiv_3.classList.add("gap-1")
@@ -58,26 +57,31 @@ function addTodo(sno = 1, value) {
   delete_button.classList.add("btn-danger")
   childDiv_3.appendChild(delete_button)
 
-  // delete_button.addEventListener('click',deleteTodo)
 
-  // edit_button.addEventListener('click',editTodo)
-
-  // delete_button.onclick = deleteTodo;
-
+  edit_button.addEventListener('click',(e)=>{
+    console.log(e.target.parentElement.parentElement.id)
+    let title = prompt("enter new title");
+    update(e.target.parentElement.parentElement.id,title)
+  })
 }
 
+function getTodos(){
 
-function getTodos() {
-  fetch("http://4.240.85.243:3000/todos")
-    .then((response) => response.json())
-    .then((result) => {
-      todos = result.todos;
-      todos.map((value, key) => {
-        addTodo(key + 1, value.title)
+    fetch("http://4.240.85.243:3000/todos")
+      .then((response) => response.json())
+      .then((result) => {
+        todos = result.todos;
+        todos.map((value,key)=>{
+          addTodo(key+1,value.title,value._id)
+        })
       })
-    })
-    .catch((error) => console.error(error));
-}
+      .catch((error) =>{
+        let container = document.getElementById("main-container").innerHTML =`<h1>something went wrong please try again</h1>`
+
+        
+      });
+  }
+  
 
 
 function add(title) {
@@ -85,14 +89,14 @@ function add(title) {
   myHeaders.append("Content-Type", "application/json");
 
   const raw = JSON.stringify({
-    "title": "",
-    "description": ""
+    "title": title,
+    "description": "the description is first"
   });
 
   const requestOptions = {
     method: "POST",
     headers: myHeaders,
-    body: raw,
+    body: raw, 
   };
 
   fetch("http://4.240.85.243:3000/todos", requestOptions)
@@ -115,6 +119,8 @@ function add(title) {
           onClick: function(){}
         }).showToast();
       }else{
+        let main = document.getElementById("main-container")
+        main.innerHTML = ""
         getTodos()
       }
     })
@@ -124,24 +130,76 @@ function add(title) {
 
 function addButton(){
 
-  let input = document.getElementById("todo-input")
-  if(input.value==""){
+  let input = document.getElementById("todo-input");
+  if(input.value.trim()==""){
+    Toastify({
+      text: "please enter a value",
+      duration: 3000,
+      destination: "https://github.com/apvarun/toastify-js",
+      newWindow: true,
+      close: true,
+      gravity: "top",
+      position: "left",
+      stopOnFocus: true, 
+      style: {
+        background: "red",
+        color:"white"
+      },
+      onClick: function(){}
+    }).showToast();
     return;
+
   }
-  add(input.value)
+  add(input.value);
 
   input.value = "";
 }
 
 
-getTodos()
+function update(id,title) {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
 
-// add("this is my 6th title")
-// add("this is my 6th title")
-// add("this is my 6th title")
-// add("this is my 6th title")
-// add("this is my 6th title")
-// add("this is my 6th title")
-// add("this is my 6th title")
-// add("this is my 6th title")
-// add("this is my 6th title")
+  const raw = JSON.stringify({
+    "title": title,
+    "description": "the description is first"
+  });
+
+  const requestOptions = {
+    method: "PATCH",
+    headers: myHeaders,
+    body: raw, 
+  };
+
+  fetch(`http://4.240.85.243:3000/todos/${id}`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      if(result.message == "Todo updated successfully"){
+        Toastify({
+          text: result.message,
+          duration: 3000,
+          destination: "https://github.com/apvarun/toastify-js",
+          newWindow: true,
+          close: true,
+          gravity: "top",
+          position: "right",
+          stopOnFocus: true, 
+          style: {
+            background: "red",
+            color:"white"
+          },
+          onClick: function(){}
+        }).showToast();
+        let main = document.getElementById("main-container")
+        main.innerHTML = ""
+        getTodos()
+      }else{
+        console.log(result)
+      }
+    })
+    .catch((error) => console.error(error));
+}
+
+// update("67a304be33fb315fb4ec6776","this")
+
+getTodos();  
