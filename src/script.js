@@ -117,14 +117,14 @@ function searchTodo(e) {
     return todo.taskValue.includes(e.target.value)
   })
 
-  let main = document.getElementById("main-container")
+  let main = document.getElementById("main-container");
 
 
-  main.innerHTML = ""
+  main.innerHTML = "";
 
   filteredTodos.map((element) => {
-    console.log(element)
-    addTodo(element.serialNo,element.taskValue)
+    // console.log(element)
+    addTodo(element.serialNo,element.taskValue);
   });
 
 }

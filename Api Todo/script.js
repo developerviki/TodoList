@@ -252,8 +252,7 @@ function deleteTodo(id){
         main.innerHTML = ""
         getTodos()
       }
-    })
-    .catch((error) => console.error(error));
+    }).catch((error) => console.error(error));
 }
 
 // deleteTodo()
