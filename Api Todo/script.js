@@ -1,5 +1,3 @@
-
-
 // to create the todo row
 function addTodo(sno = 1, value, id) {
   let container = document.getElementById("main-container")
